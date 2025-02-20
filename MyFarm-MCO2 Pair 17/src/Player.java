@@ -126,8 +126,8 @@ public class Player {
      * @param choice the player's input of choice 
      */
     public void plant(Tile tile, int choice) { 
-        if (tile.getRocks() == false && tile.getCurrPlant() == false) {
-            if (tile.getPlowed() == true) {
+        if (!tile.getRocks() && !tile.getCurrPlant()) {
+            if (tile.getPlowed()) {
                 System.out.println("=====PLANT=====");
                 System.out.println("[1] Turnip (Type: Root crop Cost: 5)");
                 System.out.println("[2] Carrot (Type: Root crop Cost: 10)");
@@ -138,113 +138,55 @@ public class Player {
                 System.out.println("[7] Mango (Type: Fruit tree Cost: 100)");
                 System.out.println("[8] Apple (Type: Fruit tree Cost: 200)");
                 System.out.println("Which would you like to plant in the tile?");
+                
+                Seed selectedSeed = null;
                 switch (choice) {
                     case 1:
-                        Seed turnip = new Seed("Turnip", "Root crop", 5.00+this.farmerType.getSeedCostReduce(), 2, 1, 2+this.farmerType.getWaterLimBonus(),
-                                0, 1+this.farmerType.getFertillizeLimBonus(), 1, 2, 6.00, 5.0);
-                        if (this.ObjectCoins >= turnip.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - turnip.getSeedPrice();
-                            tile.setSeed(turnip);
-                            tile.setCurrPlant(true);
-                            System.out.println(turnip.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase turnip seed!");
-                        }
+                        selectedSeed = new Seed("Turnip", "Root crop", 5.00 + farmerType.getSeedCostReduce(), 2, 1, 2 + farmerType.getWaterLimBonus(),
+                                                0, 1 + farmerType.getFertillizeLimBonus(), 1, 2, 6.00, 5.0);
                         break;
                     case 2:
-                        Seed carrot = new Seed("Carrot", "Root crop", 10.00+this.farmerType.getSeedCostReduce(), 3, 1, 2+this.farmerType.getWaterLimBonus(),
-                                0, 1+this.farmerType.getFertillizeLimBonus(), 1, 2, 9.00, 7.5);
-                        if (this.ObjectCoins >= carrot.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - carrot.getSeedPrice();
-                            tile.setSeed(carrot);
-                            tile.setCurrPlant(true);
-                            System.out.println(carrot.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase carrot seed!");
-                        }
+                        selectedSeed = new Seed("Carrot", "Root crop", 10.00 + farmerType.getSeedCostReduce(), 3, 1, 2 + farmerType.getWaterLimBonus(),
+                                                0, 1 + farmerType.getFertillizeLimBonus(), 1, 2, 9.00, 7.5);
                         break;
                     case 3:
-                        Seed potato = new Seed("Potato", "Root crop", 20.00+this.farmerType.getSeedCostReduce(), 5, 3, 4+this.farmerType.getWaterLimBonus(),
-                                1, 2+this.farmerType.getFertillizeLimBonus(), 1, 10, 3.00, 12.5);
-                        if (this.ObjectCoins >= potato.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - potato.getSeedPrice();
-                            tile.setSeed(potato);
-                            tile.setCurrPlant(true);
-                            System.out.println(potato.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase potato seed!");
-                        }
+                        selectedSeed = new Seed("Potato", "Root crop", 20.00 + farmerType.getSeedCostReduce(), 5, 3, 4 + farmerType.getWaterLimBonus(),
+                                                1, 2 + farmerType.getFertillizeLimBonus(), 1, 10, 3.00, 12.5);
                         break;
                     case 4:
-                        Seed rose = new Seed("Rose", "Flower", 5.00+this.farmerType.getSeedCostReduce(), 1, 1, 2+this.farmerType.getWaterLimBonus(),
-                                0, 1+this.farmerType.getFertillizeLimBonus(), 1, 1, 5.00, 2.5);
-                        if (this.ObjectCoins >= rose.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - rose.getSeedPrice();
-                            tile.setSeed(rose);
-                            tile.setCurrPlant(true);
-                            System.out.println(rose.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase rose seed!");
-                        }
+                        selectedSeed = new Seed("Rose", "Flower", 5.00 + farmerType.getSeedCostReduce(), 1, 1, 2 + farmerType.getWaterLimBonus(),
+                                                0, 1 + farmerType.getFertillizeLimBonus(), 1, 1, 5.00, 2.5);
                         break;
                     case 5:
-                        Seed turnips = new Seed("Turnips", "Flower", 10.00+this.farmerType.getSeedCostReduce(), 2, 2, 3+this.farmerType.getWaterLimBonus(),
-                                0, 1+this.farmerType.getFertillizeLimBonus(), 1, 1, 9.00, 5.0);
-                        if (this.ObjectCoins >= turnips.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - turnips.getSeedPrice();
-                            tile.setSeed(turnips);
-                            tile.setCurrPlant(true);
-                            System.out.println(turnips.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase turnips seed!");
-                        }
+                        selectedSeed = new Seed("Turnips", "Flower", 10.00 + farmerType.getSeedCostReduce(), 2, 2, 3 + farmerType.getWaterLimBonus(),
+                                                0, 1 + farmerType.getFertillizeLimBonus(), 1, 1, 9.00, 5.0);
                         break;
                     case 6:
-                        Seed sunflower = new Seed("Sunflower", "Flower", 20.00+this.farmerType.getSeedCostReduce(), 3, 2, 3+this.farmerType.getWaterLimBonus(),
-                                1, 2+this.farmerType.getFertillizeLimBonus(), 1, 1, 19.00, 7.5);
-                        if (this.ObjectCoins >= sunflower.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - sunflower.getSeedPrice();
-                            tile.setSeed(sunflower);
-                            tile.setCurrPlant(true);
-                            System.out.println(sunflower.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase sunflower seed!");
-                        }
+                        selectedSeed = new Seed("Sunflower", "Flower", 20.00 + farmerType.getSeedCostReduce(), 3, 2, 3 + farmerType.getWaterLimBonus(),
+                                                1, 2 + farmerType.getFertillizeLimBonus(), 1, 1, 19.00, 7.5);
                         break;
                     case 7:
-                        Seed mango = new Seed("Mango", "Fruit tree", 100.00+this.farmerType.getSeedCostReduce(), 10, 7, 7+this.farmerType.getWaterLimBonus(),
-                                4, 4+this.farmerType.getFertillizeLimBonus(), 5, 15, 8.00, 25.0);
-                        if (this.ObjectCoins >= mango.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - mango.getSeedPrice();
-                            tile.setSeed(mango);
-                            tile.setCurrPlant(true);
-                            System.out.println(mango.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase mango seed!");
-                        }
+                        selectedSeed = new Seed("Mango", "Fruit tree", 100.00 + farmerType.getSeedCostReduce(), 10, 7, 7 + farmerType.getWaterLimBonus(),
+                                                4, 4 + farmerType.getFertillizeLimBonus(), 5, 15, 8.00, 25.0);
                         break;
                     case 8:
-                        Seed apple = new Seed("Apple", "Fruit tree", 200.00+this.farmerType.getSeedCostReduce(), 10, 7, 7+this.farmerType.getWaterLimBonus(),
-                                5, 5+this.farmerType.getFertillizeLimBonus(), 10, 15, 5.00, 25.0);
-                        if (this.ObjectCoins >= apple.getSeedPrice()) {
-                            this.ObjectCoins = this.ObjectCoins - apple.getSeedPrice();
-                            tile.setSeed(apple);
-                            tile.setCurrPlant(true);
-                            System.out.println(apple.getName()+" has been planted on the tile!");
-                        } else {
-                            System.out.println("Insufficient ObjectCoins to purchase apple seed!");
-                        }
+                        selectedSeed = new Seed("Apple", "Fruit tree", 200.00 + farmerType.getSeedCostReduce(), 10, 7, 7 + farmerType.getWaterLimBonus(),
+                                                5, 5 + farmerType.getFertillizeLimBonus(), 10, 15, 5.00, 25.0);
                         break;
-
                     default:
                         System.out.println("Invalid input!");
+                        return;
                 }
 
+                if (selectedSeed != null) {
+                    ActionTemplate plantAction = new PlantAction();
+                    plantAction.execute(tile, selectedSeed, this);
+                }
             } else {
-                System.out.println("Tile has not been plowed! You have to plow the tile with a plow first.");
+                System.out.println("Tile has not been plowed! You have to plow the tile first.");
             }
-        }  else {
-            System.out.println("Tile is still occupied and cannot be planted on!");
+        } else {
+            System.out.println("Tile is still occupied or has rocks and cannot be planted on!");
         }
     }
 

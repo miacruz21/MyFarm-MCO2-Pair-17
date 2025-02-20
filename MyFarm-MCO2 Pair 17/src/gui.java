@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class gui extends JFrame implements ActionListener{
+public class Gui extends JFrame implements ActionListener{
     //variables
     private JLabel header;
     private JLabel stats;
@@ -17,15 +17,10 @@ public class gui extends JFrame implements ActionListener{
     private JLabel background;
 
     private Player player1 = new Player(0, 100, 1, 0);;
-    private Tool Plow = new Tool("Plow", 0.00, 0.5);
-    private Tool WateringCan = new Tool("Watering Can", 0.00, 0.5);
-    private Tool Fertilizer = new Tool("Fertilizer", 10.00, 4.0);
-    private Tool Pickaxe = new Tool("Pickaxe", 50.00, 15.0);
-    private Tool Shovel = new Tool("Shovel", 7.00, 2.0);
 
     /*Creates the main gui
      */
-    public gui(){
+    public Gui(){
         //container
         setTitle("MyFarm");
         setBounds(550, 250, 800, 500);
@@ -345,166 +340,48 @@ public class gui extends JFrame implements ActionListener{
     
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
+            ActionStrategy actionStrategy = null;
+            
             if(e.getSource() == info) {
-                if(tile.getWither()){
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                }
-    
-                if(tile.getRocks()){
-                    JOptionPane.showMessageDialog(this, "This is just a rock, we might need to use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if(tile.getSeed() != null) {
-                    new seedInfo(tile.getSeed());
-                } else{
-                    JOptionPane.showMessageDialog(this, "There is nothing in this tile, we might need to plant a seed", "Empty", JOptionPane.INFORMATION_MESSAGE);
-                }
+                actionStrategy = new InfoActionStrategy();
             } else if(e.getSource() == plow) {
-                if (tile.getWither()) {
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getRocks()) {
-                    JOptionPane.showMessageDialog(this, "We cannot plow the tile because there is a rock on it, we night need use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getSeed() != null) {
-                    JOptionPane.showMessageDialog(this, "There is a seed in this tile, we might need to use Shovel", "Seed", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getPlowed()) {
-                    JOptionPane.showMessageDialog(this, "This tile is plowed", "Plowed", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    player1.plow(Plow, tile);
-                    button.setBackground(Color.ORANGE);
-                    JOptionPane.showMessageDialog(this, "Successfully plowed this tile (Xp gained: "+Plow.getXpGain()+")", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    stats.setText("Player Stats: \nFarmer type - " + 
-                        player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                        " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                        " | Day " + player1.getDay());
-                }
+                actionStrategy = new PlowActionStrategy();
             } else if(e.getSource() == water) {
-                if (tile.getWither()) {
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getRocks()) {
-                    JOptionPane.showMessageDialog(this, "We cannot water the tile because there is a rock on it, we night need to use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getSeed() != null) {
-                    if (tile.getPlowed() == false) {
-                        JOptionPane.showMessageDialog(this, "We cannot water the tile because it is not plowed, we might need to use Plow", "Not Plowed", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        if(tile.getTimesWatered() < tile.getSeed().getWaterBonusLim()) {
-                            player1.water(WateringCan, tile);
-                            JOptionPane.showMessageDialog(this, "Successfully watered this tile (Xp gained: "+WateringCan.getXpGain()+")", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                        } else {
-                            player1.water(WateringCan, tile);
-                            JOptionPane.showMessageDialog(this, "The seed has been watered enough (Xp gained: "+WateringCan.getXpGain()+")", "Watered", JOptionPane.INFORMATION_MESSAGE);
-                            stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "There is nothing in this tile, we might need to plant a seed", "Empty", JOptionPane.INFORMATION_MESSAGE);
-                }
+                actionStrategy = new WaterActionStrategy();
             } else if(e.getSource() == shovel) {
-               if (tile.getRocks()) {
-                    JOptionPane.showMessageDialog(this, "There is a rock in this tile, we might need to use Shovel", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (!tile.getPlowed()) {
-                   JOptionPane.showMessageDialog(this, "There is nothing in this tile, we might need to plant a seed", "Empty", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    if(player1.getObjectCoins() >= Shovel.getCost()) {
-                        player1.useShovel(Shovel, tile);
-                        button.setBackground(Color.WHITE);
-                        JOptionPane.showMessageDialog(this, "Successfully un-plowed this tile (Xp gained: "+Shovel.getXpGain()+")", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Not enough Objectcoins to use Shovel", "Not Enough Money", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
+                actionStrategy = new ShovelActionStrategy();
             } else if(e.getSource() == pickaxe) {
-                if (tile.getWither()) {
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getSeed() != null) {
-                    JOptionPane.showMessageDialog(this, "There is a seed in this tile, we might need to use Shovel", "Seed", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getPlowed()) {
-                    JOptionPane.showMessageDialog(this, "The tile is plowed, we might need to use Shovel", "Plowed", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    if (player1.getObjectCoins() >= Pickaxe.getCost()) {
-                        player1.usePick(Pickaxe, tile);
-                        button.setBackground(Color.WHITE);
-                        JOptionPane.showMessageDialog(this, "Successfully removed a rock (Xp gained: "+Pickaxe.getXpGain()+")", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                    } else
-                    JOptionPane.showMessageDialog(this, "Not enough Objectcoins to use Pickaxe", "Not Enough Money", JOptionPane.INFORMATION_MESSAGE);
-                }
+                actionStrategy = new PickaxeActionStrategy();
             } else if(e.getSource() == fertilize) {
-                if (tile.getWither()) {
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getRocks()) {
-                    JOptionPane.showMessageDialog(this, "We cannot fertilize the tile because there is a rock on it, we night need to use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (player1.getObjectCoins() >= Fertilizer.getCost()) {
-                    if (tile.getSeed() != null) {
-                        if(tile.getSeed().getFertilizerBonusLim() + tile.getSeed().getFertilizerNeeds() > tile.getTimesFertilized()) {
-                            player1.fertilize(Fertilizer, tile);
-                            timesFertilized.setText("Times Fertilized: " + tile.getTimesFertilized());
-                            JOptionPane.showMessageDialog(this, "Successfully fertilized this tile (Xp gained: "+Fertilizer.getXpGain()+")", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                        } else {
-                            player1.fertilize(Fertilizer, tile);
-                            JOptionPane.showMessageDialog(this, "The seed has been fertilized enough (Xp gained: "+Fertilizer.getXpGain()+")", "Fertilized", JOptionPane.INFORMATION_MESSAGE);
-                            stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "There is nothing in this tile, we might need to plant a seed", "Empty", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } else 
-                JOptionPane.showMessageDialog(this, "Not enough Objectcoins to use Fertilizer", "Not Enough Money", JOptionPane.INFORMATION_MESSAGE);
+                actionStrategy = new FertilizeActionStrategy();
             } else if(e.getSource() == harvest) {
-                if (tile.getWither()) {
-                    JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getRocks()) {
-                    JOptionPane.showMessageDialog(this, "We cannot harvest the tile because there is a rock on it, we night need to use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getSeed() != null) {
-                    if(tile.getSeed().getFarmTime() == 0) {
-                        JOptionPane.showMessageDialog(this, "Successfully harvested this tile - No. of "+
-                            tile.getSeed().getName()+" produced: "+tile.getSeed().getProductsProduced()+
-                            " Xp gained: "+tile.getSeed().getXpGain(), "Success", JOptionPane.INFORMATION_MESSAGE);
-                        player1.harvest(tile);
-                        stats.setText("Player Stats: \nFarmer type - " + 
-                                player1.getFarmerType().getName() + " | Level - " + player1.getLevel() + 
-                                " | XP - " + player1.getXp() + " | Objectcoins - " + player1.getObjectCoins() + 
-                                " | Day " + player1.getDay());
-                        button.setBackground(Color.ORANGE);
-                    } else if (tile.getSeed().getFarmTime() > 0) {
-                        JOptionPane.showMessageDialog(this, "The seed has not grown enough", "Unable to Harvest", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "There is nothing in this tile, we might need to plant a seed", "Empty", JOptionPane.INFORMATION_MESSAGE);
-                }
+                actionStrategy = new HarvestActionStrategy();
             } else if(e.getSource() == plant) {
                 if (tile.getWither()) {
                     JOptionPane.showMessageDialog(this, "The tile has withered, we might need to use Shovel", "Withered", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getRocks()) {
+                    return;
+                } 
+                
+                if (tile.getRocks()) {
                     JOptionPane.showMessageDialog(this, "We cannot plant the tile because there is a rock on it, we night need to use Pickaxe", "Rock", JOptionPane.INFORMATION_MESSAGE);
-                } else if (tile.getSeed() != null) {
-                    JOptionPane.showMessageDialog(this, "There is a seed in this tile, we might need to use Shovel", "Seed", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    if(tile.getPlowed()) {
-                        new plantSeed(tile, button);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "The tile is not plowed yet, please use Plow", "Need Plow", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    return;
                 }
+                
+                if (tile.getSeed() != null) {
+                    JOptionPane.showMessageDialog(this, "There is a seed in this tile, we might need to use Shovel", "Seed", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+        
+                if (!tile.getPlowed()) {
+                    JOptionPane.showMessageDialog(this, "The tile is not plowed yet, please use Plow", "Need Plow", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+        
+                new plantSeed(tile, button);
+            }
+
+            if (actionStrategy != null) {
+                actionStrategy.execute(player1, tile, this, button, stats);
             }
     
             if(tile.getRocks()){
@@ -519,6 +396,10 @@ public class gui extends JFrame implements ActionListener{
             wither.setText("Withered: " + tile.getWither());
             timesWatered.setText("Times Watered: " + tile.getTimesWatered());
             timesFertilized.setText("Times Fertilized: " + tile.getTimesFertilized());
+        }
+
+        JLabel getTimesFertilized() {
+            return timesFertilized;
         }
     }
 

@@ -17,6 +17,6 @@ Date: December 10, 2022
 */
 public class driver {
     public static void main(String[] args) throws Exception {
-        new gui();
+        new Gui();
     }
 }
